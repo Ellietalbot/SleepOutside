@@ -8,7 +8,7 @@ function convertToJson(res:Response) {
 }
 
 export function getData(category = "tents") {
-  return fetch(`../json/${category}.json`)
+  return fetch(`/json/${category}.json`)
     .then(convertToJson)
     .then((data) => data);
 }
