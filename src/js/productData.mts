@@ -9,11 +9,12 @@ function convertToJson(res: Response) {
   }
 }
 
-export async function getProducts(category:string) {
-  const response = await fetch(baseURL + `?category=${category}`);
-  return response;
+export async function getProducts(category:string = "tents") {
+  const response = await fetch(baseURL + `products?category=${category}`);
+  const data = (await convertToJson(response)) as Product[];
+  if (!category) return data;
+  return data.filter((product) => product.category === category);
 }
-
 export async function findProductById(id:string) {
     const response = await fetch(baseURL + `products/${id}`);
     const product = await convertToJson(response) as Product;
