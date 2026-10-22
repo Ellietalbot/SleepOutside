@@ -9,10 +9,9 @@ function convertToJson(res: Response) {
   }
 }
 
-export function getData(category = "tents") {
-  return fetch(`/json/${category}.json`)
-    .then(convertToJson)
-    .then((data) => data);
+export async function getProducts(category:string) {
+  const response = await fetch(baseURL + `?category=${category}`);
+  return response;
 }
 
 export async function findProductById(id:string) {
