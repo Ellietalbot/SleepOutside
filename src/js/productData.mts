@@ -1,5 +1,5 @@
 import type { Product } from "./types.mts";
-const baseURL = import.meta.env.PUBLIC_SERVER_URL;
+const baseURL = `${import.meta.env.PUBLIC_SERVER_URL.replace(/\/?$/, "/")}`;
 
 function convertToJson(res: Response) {
   if (res.ok) {
