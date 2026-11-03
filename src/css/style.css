@@ -277,6 +277,24 @@ button {
   grid-row: 2;
   grid-column: 3;
 }
+.cart-pop {
+  animation: cartPop 0.4s ease;
+}
+
+@keyframes cartPop {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  40% {
+    transform: scale(1.2) translateY(-8px);
+  }
+  70% {
+    transform: scale(1.2) translateY(-8px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
 
 @media screen and (min-width: 500px) {
   body {
