@@ -7,7 +7,17 @@
 
   let category = $state("");
   let products: Product[] = $state([]);
+  // using sortby to help sort the product list.
+  let sortBy = $state("name");
   let error = $state("");
+
+  let sortedProducts = $derived.by(() => {
+    const copy = [...products];
+    if (sortBy === "name") {
+      return copy.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return copy.sort((a, b) => a.finalPrice - b.finalPrice);
+  });
 
   async function init() {
     category = getParam("category") || "";
