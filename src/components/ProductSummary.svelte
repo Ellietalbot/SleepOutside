@@ -8,6 +8,6 @@
     <img src={product.images.primaryLarge} alt={product.name} />
     <h3 class="card__brand">{product.brand.name}</h3>
     <h2 class="card__name">{product.nameWithoutBrand}</h2>
-    <p class="product-card__price">${product.finalPrice}</p></a
+    <p class="product-card__price">${(product.finalPrice).toFixed(2)}</p></a
   >
 </li>

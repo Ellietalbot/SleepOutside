@@ -32,7 +32,8 @@ const title = product.data.name;
           alt={product.data.name}
         />
 
-        <p class="product-card__price">${product.data.listPrice}</p>
+        <p class="product-card__price">${(product.data.listPrice).toFixed(2)}</p>
+        <p class="product-card__discount-price">Discounted price: ${(product.data.listPrice * 0.8).toFixed(2)}</p>
 
         <p class="product__color">{product.data.colors.colorName}</p>
 
