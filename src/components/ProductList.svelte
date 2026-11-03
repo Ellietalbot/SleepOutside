@@ -5,15 +5,22 @@
   import { getParam } from "../js/utils.mjs";
   import ProductSummary from "./ProductSummary.svelte";
 
-// declare these out here as state so we can us it in our template below
-  let category = $state(""); 
-  let products:Product[] = $state([]);
+  let category = $state("");
+  let products: Product[] = $state([]);
+  let error = $state("");
 
   async function init() {
-    
-    category = getParam("category") || ""
-    const data = await getProducts(category);
-    products = data;
+    category = getParam("category") || "";
+
+    try {
+      products = await getProducts(category);
+    } catch (cause) {
+      error =
+        cause instanceof Error
+          ? cause.message
+          : "Unable to load products. Please try again.";
+      console.error("Unable to load products:", cause);
+    }
   }
 
   onMount(init);
@@ -21,8 +28,12 @@
 
 <h2>Top Products: {category}</h2>
 
+{#if error}
+  <p role="alert">{error}</p>
+{/if}
+
 <ul class="product-list">
-{#each products as product}
+  {#each products as product (product.id)}
     <ProductSummary {product} />
-{/each}
-</ul>  
+  {/each}
+</ul>
