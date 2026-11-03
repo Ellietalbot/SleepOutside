@@ -54,9 +54,3 @@
 {#if error}
   <p role="alert">{error}</p>
 {/if}
-
-<ul class="product-list">
-  {#each products as product (product.id)}
-    <ProductSummary {product} />
-  {/each}
-</ul>
