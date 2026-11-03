@@ -314,6 +314,11 @@ button {
   }
 }
 
+/* this is for the cart total to hide when there are no products in the cart. */
+.hide {
+  display: none;
+}
+
 footer {
   font-size: var(--small-font);
   padding: 1em;

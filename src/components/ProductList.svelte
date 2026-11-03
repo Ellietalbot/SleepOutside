@@ -28,6 +28,19 @@
 
 <h2>Top Products: {category}</h2>
 
+<label>
+  Sort by
+  <select bind:value={sortBy}>
+    <option value="name">Name</option>
+    <option value="price">Price</option>
+  </select>
+</label>
+
+<ul class="product-list">
+  {#each sortedProducts as product}
+    <ProductSummary {product} />
+  {/each}
+</ul>
 {#if error}
   <p role="alert">{error}</p>
 {/if}
