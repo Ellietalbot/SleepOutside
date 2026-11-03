@@ -1,3 +1,5 @@
-import { openUserMenu } from "./utils.mjs";
 
-openUserMenu(".user__button");
+import { displayAlerts } from "../js/alerts.ts";
+
+
+displayAlerts();

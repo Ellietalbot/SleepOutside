@@ -5,25 +5,22 @@
   import { getParam } from "../js/utils.mjs";
   import ProductSummary from "./ProductSummary.svelte";
 
-  // declare these out here as state so we can us it in our template below
   let category = $state("");
   let products: Product[] = $state([]);
-  // using sortby to help sort the product list.
-  let sortBy = $state("name");
-
-  // copy first so .sort() doesn't change the original array
-  let sortedProducts = $derived.by(() => {
-    const copy = [...products];
-    if (sortBy === "name") {
-      return copy.sort((a, b) => a.name.localeCompare(b.name));
-    }
-    return copy.sort((a, b) => a.finalPrice - b.finalPrice);
-  });
+  let error = $state("");
 
   async function init() {
     category = getParam("category") || "";
-    const data = await getProducts(category);
-    products = data;
+
+    try {
+      products = await getProducts(category);
+    } catch (cause) {
+      error =
+        cause instanceof Error
+          ? cause.message
+          : "Unable to load products. Please try again.";
+      console.error("Unable to load products:", cause);
+    }
   }
 
   onMount(init);
@@ -41,6 +38,15 @@
 
 <ul class="product-list">
   {#each sortedProducts as product}
+    <ProductSummary {product} />
+  {/each}
+</ul>
+{#if error}
+  <p role="alert">{error}</p>
+{/if}
+
+<ul class="product-list">
+  {#each products as product (product.id)}
     <ProductSummary {product} />
   {/each}
 </ul>
