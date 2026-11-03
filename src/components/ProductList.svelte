@@ -5,13 +5,23 @@
   import { getParam } from "../js/utils.mjs";
   import ProductSummary from "./ProductSummary.svelte";
 
-// declare these out here as state so we can us it in our template below
-  let category = $state(""); 
-  let products:Product[] = $state([]);
+  // declare these out here as state so we can us it in our template below
+  let category = $state("");
+  let products: Product[] = $state([]);
+  // using sortby to help sort the product list.
+  let sortBy = $state("name");
+
+  // copy first so .sort() doesn't change the original array
+  let sortedProducts = $derived.by(() => {
+    const copy = [...products];
+    if (sortBy === "name") {
+      return copy.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return copy.sort((a, b) => a.finalPrice - b.finalPrice);
+  });
 
   async function init() {
-    
-    category = getParam("category") || ""
+    category = getParam("category") || "";
     const data = await getProducts(category);
     products = data;
   }
@@ -21,8 +31,16 @@
 
 <h2>Top Products: {category}</h2>
 
+<label>
+  Sort by
+  <select bind:value={sortBy}>
+    <option value="name">Name</option>
+    <option value="price">Price</option>
+  </select>
+</label>
+
 <ul class="product-list">
-{#each products as product}
+  {#each sortedProducts as product}
     <ProductSummary {product} />
-{/each}
-</ul>  
+  {/each}
+</ul>
