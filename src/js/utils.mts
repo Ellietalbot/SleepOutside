@@ -32,20 +32,6 @@ export function setClick(selector: string, callback: ClickHandler) {
   element?.addEventListener("click", callback);
 }
 
-export function openUserMenu(selector: string) {
-  setClick(selector, (e: Event) => {
-    e.stopPropagation();
-    const el = document.querySelector(".user__menu");
-    el?.classList.toggle("open");
-  });
-  setClick("body", () => {
-    const openMenus = document.querySelectorAll(".open");
-    openMenus.forEach((el) => {
-      el?.classList.remove("open");
-    });
-  });
-}
-
 export function getParam(param: string){
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);

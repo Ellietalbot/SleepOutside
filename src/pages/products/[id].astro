@@ -27,12 +27,13 @@ const title = product.data.name;
         <h2 class="divider">{product.data.nameWithoutBrand}</h2>
 
         <img
-          class="divider"
-          src={"../"+product.data.image}
+          class="divider product-image"
+          src={product.data.images.primaryLarge}
           alt={product.data.name}
         />
 
-        <p class="product-card__price">${product.data.listPrice}</p>
+        <p class="product-card__price">${(product.data.listPrice).toFixed(2)}</p>
+        <p class="product-card__discount-price">Discounted price: ${(product.data.listPrice * 0.8).toFixed(2)}</p>
 
         <p class="product__color">{product.data.colors.colorName}</p>
 
