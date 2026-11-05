@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { checkAuth, logout, userStore } from "../js/auth.svelte.ts";
 
   let visible = $state(false);
 
@@ -39,6 +40,9 @@
 </script>
 
 <div class="user">
+  {#if userStore.isLoggedIn}
+    <p>{userStore.user.name}</p>
+  {/if}
   <button
     class="user__button"
     aria-label="user management"
@@ -49,9 +53,13 @@
   </button>
   
   <nav class="user__menu" class:open={visible}>
-    <a href="#">Login</a>
-    <a href="#">Profile</a>
-    <a href="#">Orders</a>
+    {#if !userStore.isLoggedIn}
+      <a href="/login/">Login</a>
+    {:else}
+      <a href="/profile/">Profile</a>
+      <a href="#">Orders</a>
+      <button onclick={logout} class="link-style-button">Logout</button>
+    {/if}
   </nav>
 </div>
 
