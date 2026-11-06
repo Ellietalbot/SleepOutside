@@ -2,14 +2,22 @@ import type { Product } from "./types.mts";
 import { getLocalStorage, setLocalStorage } from "./utils.mts";
 import { findProductById } from "./productData.mts";
 
+type CartItem = Product & {
+  quantity?: number;
+};
+
 function addProductToCart(product: Product) {
-  const cart = getLocalStorage("so-cart");
-  if (cart) {
-    cart.push(product);
-    setLocalStorage("so-cart", cart);
+  const cart: CartItem[] = getLocalStorage("so-cart") ?? [];
+
+  const existingItem = cart.find((item) => item.id === product.id);
+
+  if (existingItem) {
+    existingItem.quantity = (existingItem.quantity ?? 1) + 1;
   } else {
-    setLocalStorage("so-cart", [product]);
+    cart.push({ ...product, quantity: 1 });
   }
+
+  setLocalStorage("so-cart", cart);
 }
 
 function animateToCart(source: HTMLImageElement) {
