@@ -1,8 +1,13 @@
-import { getLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 import type { Product } from "./types.mjs";
 
+
+type CartItem = Product & {
+  quantity?: number;
+};
+
 function renderCartContents() {
-  const cartItems: Product[] = getLocalStorage("so-cart") ?? [];
+const cartItems: CartItem[] = getLocalStorage("so-cart") ?? [];
   const listEl = document.querySelector(".product-list");
   if (!listEl) return;
 
@@ -16,17 +21,38 @@ function renderCartContents() {
   renderCartTotal(cartItems);
 }
 
-function renderCartTotal(cartItems: Product[]) {
+function renderCartTotal(cartItems: CartItem[]) {
   const footerEl = document.querySelector(".cart-footer");
   const totalEl = document.querySelector(".cart-total");
   if (!footerEl || !totalEl) return;
 
-  const total = cartItems.reduce((sum, item) => sum + item.finalPrice, 0);
+  const total = cartItems.reduce(
+    (sum, item) => sum + item.finalPrice * (item.quantity ?? 1),
+    0
+  );
   footerEl.classList.remove("hide");
   totalEl.innerHTML = `Total: $${total.toFixed(2)}`;
 }
 
-function cartItemTemplate(item: Product) {
+function updateQuantity(id: string, change: number) {
+  const cartItems: CartItem[] = getLocalStorage("so-cart") ?? [];
+  const item = cartItems.find((cartItem) => cartItem.id === id);
+  if (!item) return;
+
+  item.quantity = Math.max(1, (item.quantity ?? 1) + change);
+  setLocalStorage("so-cart", cartItems);
+  renderCartContents();
+}
+
+document.querySelector(".product-list")?.addEventListener("click", (e) => {
+  const button = (e.target as HTMLElement).closest<HTMLButtonElement>(".qty-btn");
+  if (!button?.dataset.id) return;
+
+  const change = button.dataset.action === "increase" ? 1 : -1;
+  updateQuantity(button.dataset.id, change);
+});
+
+function cartItemTemplate(item: CartItem) {
   const newItem = `<li class="cart-card divider">
   <a href="#" class="cart-card__image">
     <img
@@ -38,9 +64,16 @@ function cartItemTemplate(item: Product) {
     <h2 class="card__name">${item.name}</h2>
   </a>
   <p class="cart-card__color">${item.colors[0].colorName}</p>
-  <p class="cart-card__quantity">qty: 1</p>
-  <p class="cart-card__price">$${item.finalPrice}</p>
-</li>`;
+<p class="cart-card__quantity">
+    <button class="qty-btn" data-id="${item.id}" data-action="decrease"
+      style="all: unset; cursor: pointer;"
+      aria-label="Decrease quantity" ${(item.quantity ?? 1) <= 1 ? "disabled" : ""}>−</button>
+    ${item.quantity ?? 1}
+    <button class="qty-btn" data-id="${item.id}" data-action="increase"
+      style="all: unset; cursor: pointer;"
+      aria-label="Increase quantity">+</button>
+  </p>
+<p class="cart-card__price">$${(item.finalPrice * (item.quantity ?? 1)).toFixed(2)}</p></li>`;
 
   return newItem;
 }
