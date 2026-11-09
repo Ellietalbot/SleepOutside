@@ -1,8 +1,8 @@
 import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 import type { Product } from "./types.mjs";
+import { notifyCartUpdated } from "./cart-count";
 
-
-type CartItem = Product & {
+export type CartItem = Product & {
   quantity?: number;
 };
 
@@ -19,12 +19,7 @@ const cartItems: CartItem[] = getLocalStorage("so-cart") ?? [];
   const htmlItems = cartItems.map(cartItemTemplate);
   listEl.innerHTML = htmlItems.join("");
   renderCartTotal(cartItems);
-  let itemsTotal = calculateTotalCartItems(cartItems);
-  if (itemsTotal > 0) {
-    const cartTotal = document.querySelector(".cart-total");
-    let html = `${itemsTotal} items in your cart`;
-    cartTotal.innerHTML = html;
-  }
+  notifyCartUpdated();
 }
 
 function renderCartTotal(cartItems: CartItem[]) {
@@ -38,20 +33,6 @@ function renderCartTotal(cartItems: CartItem[]) {
   );
   footerEl.classList.remove("hide");
   totalEl.innerHTML = `Total: $${total.toFixed(2)}`;
-}
-
-function calculateTotalCartItems(cartItems: CartItem[])
-{
-  let cartTotal = 0;
-  for (let i = 0; i < cartItems.length; i++)
-  {
-    let currentTotal = cartItems[i].quantity ?? 1;
-    if (currentTotal)
-    {
-      cartTotal += currentTotal;
-    }
-  }
-  return cartTotal;
 }
 
 function updateQuantity(id: string, change: number) {

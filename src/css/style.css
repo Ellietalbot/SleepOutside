@@ -300,6 +300,26 @@ button {
   }
 }
 
+.cart-count {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  display: grid;
+  place-items: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.2rem;
+  border-radius: 50%;
+  background: #c00;
+  color: white;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.cart-count[hidden] {
+  display: none;
+}
+
 @media screen and (min-width: 500px) {
   body {
     max-width: 1080px;
