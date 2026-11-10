@@ -52,6 +52,7 @@ const { title } = Astro.props;
               <!-- <text x="0" y="115" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">Created by Natalia Woodroffe</text>
             <text x="0" y="120" fill="#000000" font-size="5px" font-weight="bold" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif">from the Noun Project</text> -->
             </svg>
+            <span id="cart-count" class="cart-count" hidden>0</span>
           </a>
         </div>
       </nav>
@@ -60,5 +61,15 @@ const { title } = Astro.props;
       <slot />
     </main>
     <footer>&copy;NOT a real business</footer>
+    <script>
+      import { updateCartCount } from "../js/cart-count";
+
+      updateCartCount();
+
+      window.addEventListener("cart-updated", () => updateCartCount());
+      window.addEventListener("storage", (event) => {
+        if (event.key === "so-cart") updateCartCount();
+      });
+    </script>
   </body>
 </html>

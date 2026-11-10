@@ -1,8 +1,8 @@
 import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 import type { Product } from "./types.mjs";
+import { notifyCartUpdated } from "./cart-count";
 
-
-type CartItem = Product & {
+export type CartItem = Product & {
   quantity?: number;
 };
 
@@ -19,6 +19,7 @@ const cartItems: CartItem[] = getLocalStorage("so-cart") ?? [];
   const htmlItems = cartItems.map(cartItemTemplate);
   listEl.innerHTML = htmlItems.join("");
   renderCartTotal(cartItems);
+  notifyCartUpdated();
 }
 
 function renderCartTotal(cartItems: CartItem[]) {
