@@ -13,6 +13,7 @@ const cartItems: CartItem[] = getLocalStorage("so-cart") ?? [];
 
   if (cartItems.length === 0) {
     listEl.innerHTML = "<p>Your cart is empty.</p>";
+    document.querySelector(".cart-footer")?.classList.add("hide");
     return;
   }
 
@@ -44,8 +45,23 @@ function updateQuantity(id: string, change: number) {
   renderCartContents();
 }
 
+function removeFromCart(id: string) {
+  const cartItems: CartItem[] = getLocalStorage("so-cart") ?? [];
+  const updated = cartItems.filter((item) => item.id !== id);
+  setLocalStorage("so-cart", updated);
+  renderCartContents();
+}
+
 document.querySelector(".product-list")?.addEventListener("click", (e) => {
-  const button = (e.target as HTMLElement).closest<HTMLButtonElement>(".qty-btn");
+  const target = e.target as HTMLElement;
+
+  const removeEl = target.closest<HTMLElement>(".cart-card__remove");
+  if (removeEl?.dataset.id) {
+    removeFromCart(removeEl.dataset.id);
+    return;
+  }
+
+  const button = target.closest<HTMLButtonElement>(".qty-btn");
   if (!button?.dataset.id) return;
 
   const change = button.dataset.action === "increase" ? 1 : -1;
@@ -54,6 +70,7 @@ document.querySelector(".product-list")?.addEventListener("click", (e) => {
 
 function cartItemTemplate(item: CartItem) {
   const newItem = `<li class="cart-card divider">
+   <span class="cart-card__remove" data-id="${item.id}" role="button" aria-label="Remove ${item.name} from cart">✕</span>
   <a href="#" class="cart-card__image">
     <img
       src="${item.images.primaryLarge}"

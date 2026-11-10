@@ -323,3 +323,16 @@ footer {
   font-size: var(--small-font);
   padding: 1em;
 }
+
+/* css for cart remove button */
+.cart-card {
+  position: relative;
+}
+
+.cart-card__remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
