@@ -1,6 +1,7 @@
 import type { Product } from "./types.mts";
 import { getLocalStorage, setLocalStorage } from "./utils.mts";
 import { findProductById } from "./productData.mts";
+import { notifyCartUpdated } from "./cart-count";
 
 type CartItem = Product & {
   quantity?: number;
@@ -18,6 +19,7 @@ function addProductToCart(product: Product) {
   }
 
   setLocalStorage("so-cart", cart);
+  notifyCartUpdated();
 }
 
 function animateToCart(source: HTMLImageElement) {
