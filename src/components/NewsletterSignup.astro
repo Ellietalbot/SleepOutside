@@ -86,10 +86,11 @@
     }
 </style>
 
+
 <script>
-  const form = document.querySelector<HTMLFormElement>(
-    ".newsletter-form"
-  );
+  const form = document.querySelector(".newsletter-form");
+
+  const baseURL = import.meta.env.PUBLIC_SERVER_URL;
 
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -99,6 +100,30 @@
     const name = formData.get("name");
     const email = formData.get("email");
 
-    form.reset();
+    try {
+      const res = await fetch(`${baseURL}subscribers/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Successfully subscribed!");
+        form.reset();
+      } else {
+        alert(data.message || "Something went wrong.");
+      }
+
+    } catch (error) {
+      console.error("Subscription error:", error);
+      alert("Unable to subscribe. Please try again.");
+    }
   });
 </script>
