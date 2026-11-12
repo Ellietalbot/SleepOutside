@@ -35,6 +35,14 @@ export async function getProducts(category: string = "tents") {
   return data.filter((product) => product.category === category);
 }
 
+export async function searchProducts(query: string) {
+  const response = await fetch(
+    baseURL + `products/search?q=${encodeURIComponent(query)}`
+  );
+  return asProductList(await convertToJson(response));
+}
+
+
 export async function findProductById(id: string) {
   const response = await fetch(baseURL + `products/${encodeURIComponent(id)}`);
   const product = (await convertToJson(response)) as Product;
