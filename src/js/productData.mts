@@ -40,3 +40,28 @@ export async function findProductById(id: string) {
   const product = (await convertToJson(response)) as Product;
   return product;
 }
+
+export async function submitOrder(order: unknown, token: string) {
+  const response = await fetch(baseURL + "orders", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(order),
+  });
+
+  if (!response.ok) {
+    let message = `Request failed with status ${response.status}`;
+    try {
+      const data = await response.json();
+      if (data?.error?.message) message = data.error.message;
+      else if (data?.message) message = data.message;
+    } catch {
+      // body wasn't JSON, keep the default message
+    }
+    throw new Error(message);
+  }
+
+  return response.json();
+}
