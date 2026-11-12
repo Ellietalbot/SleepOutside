@@ -13,7 +13,7 @@ interface UserStore {
 export const userStore = $state( {isLoggedIn: false, user: {}, token: ""}) as UserStore;
 
 //logout
-//chekcAuth()
+//checkAuth()
 
 export async function login(email:string, password:string){
     //user/login

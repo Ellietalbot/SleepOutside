@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import Checkout from "../../components/Checkout.svelte";
 const title = "Checkout";
 ---
 
@@ -7,6 +8,7 @@ const title = "Checkout";
     <main class="divider">
       <section class="products">
         <h2>Review & Place your Order</h2>
+        <Checkout client:load/>
       </section>
     </main>
 </Layout>
