@@ -2,9 +2,13 @@
 import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
+import { userStore } from '../js/auth.svelte'
 
+if (userStore.isLoggedIn) {
+  const banner = document.getElementById('register-cta')
+  banner.style.display = 'none';
 
-
+}
 
 const title = "Home";
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
@@ -33,6 +37,10 @@ const title = "Home";
           mission is to provide you with everything you need to do this
           comfortably at an affordable price.
         </p>
+      </section>
+      <section id="register-cta" style="background-color:#525b0f; color:white; padding:20px">
+        <h2>Create an account. Get a chance to win!</h2>
+        <p>Sign up today to unlock your account benefits and enter our exclusive registration giveaway.</p>
       </section>
       <section class="products">
         <ul class="product-list">
