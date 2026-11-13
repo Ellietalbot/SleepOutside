@@ -28,6 +28,11 @@
         <a href="/index.html"> Sleep<span class="highlight">Outside</span></a>
       </div>
       <nav class="menu-right">
+        <form class="search-form" action="/product-list/index.html" method="get" role="search">
+          <label for="site-search" class="visually-hidden">Search products</label>
+          <input id="site-search" type="search" name="q" placeholder="Search products" required />
+          <button type="submit">Search</button>
+        </form>
         <div class="user-menu-container">
           <UserMenu />
         </div>
