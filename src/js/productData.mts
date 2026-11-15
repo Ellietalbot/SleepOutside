@@ -49,6 +49,12 @@ export async function findProductById(id: string) {
   return product;
 }
 
+export async function getRecommendedProducts(id: string) {
+  const response = await fetch(baseURL + `products/recommended/${encodeURIComponent(id)}`);
+  const recommendedProducts = asProductList(await convertToJson(response));
+  return recommendedProducts;
+}
+
 export async function submitOrder(order: unknown, token: string) {
   const response = await fetch(baseURL + "orders", {
     method: "POST",
