@@ -1,6 +1,8 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { type CollectionEntry, getCollection } from "astro:content";
+import ProductSummary from "../../components/ProductSummary.svelte";
+import { getRecommendedProducts } from "../../js/productData.mts";
 
 // map though all products to create a page for each one
 export async function getStaticPaths() {
@@ -16,6 +18,7 @@ type Props = CollectionEntry<"products">;
 // get the product data from the props to use in the template below. The actual data is in product.data
 const product = Astro.props;
 const title = product.data.name;
+const recommendedProducts = await getRecommendedProducts(product.data.id);
 ---
 <Layout title={title}>
   <script src="../../js/product.ts"></script>
@@ -44,6 +47,18 @@ const title = product.data.name;
         <div class="product-detail__add">
           <button id="addToCart" data-id={product.data.id}>Add to Cart</button>
         </div>
+      </section>
+      <section class="recommended-products">
+        <h2>Recommended products</h2>
+        {recommendedProducts.length > 0 ? (
+          <ul class="product-list">
+            {recommendedProducts.map((recommendedProduct) => (
+              <ProductSummary product={recommendedProduct} />
+            ))}
+          </ul>
+        ) : (
+          <p>No recommendations available.</p>
+        )}
       </section>
     </main>
   
