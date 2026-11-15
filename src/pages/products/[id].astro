@@ -13,11 +13,14 @@ export async function getStaticPaths() {
     props: product
   }));
 }
+
+
 type Props = CollectionEntry<"products">;
 
 // get the product data from the props to use in the template below. The actual data is in product.data
 const product = Astro.props;
 const title = product.data.name;
+const colors = product.data.colors;
 const recommendedProducts = await getRecommendedProducts(product.data.id);
 ---
 <Layout title={title}>
@@ -37,8 +40,29 @@ const recommendedProducts = await getRecommendedProducts(product.data.id);
 
         <p class="product-card__price">${(product.data.listPrice).toFixed(2)}</p>
         <p class="product-card__discount-price">Discounted price: ${(product.data.listPrice * 0.8).toFixed(2)}</p>
+        
+        {colors.length > 1 && (
+          <div class="productcolors">
+            <p class="productcolors__heading">Available Colors</p>
 
-        <p class="product__color">{product.data.colors.colorName}</p>
+            <div class="productcolors__options">
+              {colors.map((color) => (
+                <button
+                  type="button"
+                  class="productcolors__swatch"
+                  data-color-id={color.colorCode}
+                  aria-label={`Select ${color.colorName}`}
+                >
+                  <img
+                    src={color.colorChipImageSrc}
+                    alt=""
+                  />
+                  <span>{color.colorName}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <p class="product__description"
           set:html={product.data.descriptionHtmlSimple}>

@@ -5,17 +5,39 @@ import { notifyCartUpdated } from "./cart-count";
 
 type CartItem = Product & {
   quantity?: number;
+  selectedColorId?: string | null;
 };
 
-function addProductToCart(product: Product) {
+// Find all color swatch buttons
+const colors = document.querySelectorAll<HTMLButtonElement>("[data-color-id]");
+
+let selectedColorId: string | null = null;
+
+// Select the first color by default
+const firstColor = colors[0];
+
+if (firstColor) {
+  selectedColorId = firstColor.dataset.colorId ?? null;
+  firstColor.classList.add("selected");
+}
+
+function addProductToCart(product: Product, colorId: string | null) {
   const cart: CartItem[] = getLocalStorage("so-cart") ?? [];
 
-  const existingItem = cart.find((item) => item.id === product.id);
+  // Find an existing cart item with the same product AND color
+  const existingItem = cart.find(
+    (item) =>
+      item.id === product.id && (item.selectedColorId ?? null) === colorId,
+  );
 
   if (existingItem) {
     existingItem.quantity = (existingItem.quantity ?? 1) + 1;
   } else {
-    cart.push({ ...product, quantity: 1 });
+    cart.push({
+      ...product,
+      quantity: 1,
+      selectedColorId: colorId,
+    });
   }
 
   setLocalStorage("so-cart", cart);
@@ -56,18 +78,18 @@ function animateToCart(source: HTMLImageElement) {
     [
       {
         transform: "scale(1)",
-        opacity: 1
+        opacity: 1,
       },
       {
         transform: `translate(${moveX}px, ${moveY}px) scale(0.1)`,
-        opacity: 0.5
-      }
+        opacity: 0.5,
+      },
     ],
     {
       duration: 600,
       easing: "ease-in",
-      fill: "forwards"
-    }
+      fill: "forwards",
+    },
   );
 
   // Remove the temporary image when finished
@@ -81,26 +103,50 @@ function animateToCart(source: HTMLImageElement) {
   };
 }
 
-// add to cart button event handler
+// Add to cart button event handler
 async function addToCartHandler(e: Event) {
-  const target = e.target as HTMLButtonElement;
-  const productImage = document.querySelector<HTMLImageElement>(
+  const target = e.currentTarget as HTMLButtonElement;
 
-    ".product-image"
+  const productImage =
+    document.querySelector<HTMLImageElement>(".product-image");
 
-  );
   if (target.dataset.id) {
     const product = await findProductById(target.dataset.id);
-    addProductToCart(product);
+
+    const colorId =
+      selectedColorId ??
+      (product.colors?.length === 1 ? product.colors[0].colorCode : null);
+
+    if (product.colors?.length > 1 && !colorId) {
+      return;
+    }
+
+    addProductToCart(product, colorId);
+
     if (productImage) {
-
       animateToCart(productImage);
-
     }
   }
 }
 
-// add listener to Add to Cart button
+function selectColorHandler(e: Event) {
+  const selectedColor = e.currentTarget as HTMLButtonElement;
+  const colorId = selectedColor.dataset.colorId;
+
+  selectedColorId = colorId ?? null;
+
+  colors.forEach((color) => {
+    color.classList.remove("selected");
+  });
+
+  selectedColor.classList.add("selected");
+}
+
+colors.forEach((color) => {
+  color.addEventListener("click", selectColorHandler);
+});
+
+// Add listener to Add to Cart button
 document
   .getElementById("addToCart")
   ?.addEventListener("click", addToCartHandler);
