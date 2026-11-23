@@ -56,4 +56,12 @@ export function checkAuth(){
     return !!userData;
 }
 
-
+export async function fetchProfile() {
+  const res = await fetch(`${baseURL}users/${userStore.user?._id}`, {
+    headers: { Authorization: `Bearer ${userStore.token}` },
+  });
+  const data = await res.json();
+  if (res.ok) return data;
+  // the backend sends errors in two shapes: { error: { message } } or { message }
+  throw new Error(data.error?.message ?? data.message ?? "Could not load profile");
+}

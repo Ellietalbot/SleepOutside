@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { getLocalStorage, setLocalStorage } from "../js/utils.mts";
-    import { checkAuth, userStore } from "../js/auth.svelte.ts";
+    import { checkAuth, fetchProfile, userStore } from "../js/auth.svelte.ts";
     import { submitOrder } from "../js/productData.mts";
     import type { CartItem } from "../js/cart.ts";
 
@@ -148,12 +148,32 @@
         }
     }
 
+    async function prefillFromProfile() {
+        try {
+            const profile = await fetchProfile();
+            // the profile has one "name"; the form has two boxes
+            const [first = "", ...rest] = (profile.name ?? "").trim().split(/\s+/);
+            // ||= only fills a box that is still empty, so it never overwrites typing
+            shippingInfo.firstName ||= first;
+            shippingInfo.lastName ||= rest.join(" ");
+            if (profile.address) {
+                shippingInfo.street ||= profile.address.street ?? "";
+                shippingInfo.city ||= profile.address.city ?? "";
+                shippingInfo.state ||= profile.address.state ?? "";
+                shippingInfo.zip ||= profile.address.zipCode ?? "";
+            }
+        } catch {
+            // expired token or server down: leave the form blank
+        }
+    }
+
     onMount(() => {
         if (!checkAuth()) {
             window.location.href = "/login?redirect=/checkout";
             return;
         }
         cartItems = getLocalStorage("so-cart") ?? [];
+        prefillFromProfile();
     });
 </script>
 
